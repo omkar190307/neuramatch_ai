@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeuraMatch – AI Recommendation Engine</title>
+  <meta name="description" content="NeuraMatch is an intelligent AI-powered recommendation system that matches your preferences to content you'll love, using cosine similarity and pattern matching." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Animated background -->
+  <div class="bg-grid"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="17" stroke="url(#lg1)" stroke-width="2"/>
+          <circle cx="18" cy="10" r="3" fill="url(#lg2)"/>
+          <circle cx="10" cy="24" r="3" fill="url(#lg2)"/>
+          <circle cx="26" cy="24" r="3" fill="url(#lg2)"/>
+          <line x1="18" y1="13" x2="10" y2="21" stroke="url(#lg1)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="18" y1="13" x2="26" y2="21" stroke="url(#lg1)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="10" y1="24" x2="26" y2="24" stroke="url(#lg1)" stroke-width="1.5" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="lg1" x1="0" y1="0" x2="36" y2="36">
+              <stop stop-color="#a78bfa"/><stop offset="1" stop-color="#38bdf8"/>
+            </linearGradient>
+            <linearGradient id="lg2" x1="0" y1="0" x2="36" y2="36">
+              <stop stop-color="#c084fc"/><stop offset="1" stop-color="#60a5fa"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <span class="logo-text">Neura<span class="accent">Match</span></span>
+    </div>
+    <div class="header-badge">AI Recommendation Engine · DecodeLabs</div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-label">Project 3 · AI Recommendation Logic</div>
+    <h1 class="hero-title">Discover What You'll <span class="gradient-text">Love Next</span></h1>
+    <p class="hero-subtitle">Select your interests and let our cosine similarity engine match you with personalised content in real time.</p>
+  </section>
+
+  <!-- Main App -->
+  <main class="app-container">
+
+    <!-- Step 1: Choose Category -->
+    <section class="card" id="step-category">
+      <div class="card-header">
+        <div class="step-badge">01</div>
+        <div>
+          <h2 class="card-title">Choose a Category</h2>
+          <p class="card-desc">What type of content do you want recommended?</p>
+        </div>
+      </div>
+      <div class="category-grid" id="categoryGrid">
+        <button class="cat-btn active" data-cat="movies" id="cat-movies">🎬 Movies</button>
+        <button class="cat-btn" data-cat="music"  id="cat-music">🎵 Music</button>
+        <button class="cat-btn" data-cat="books"  id="cat-books">📚 Books</button>
+        <button class="cat-btn" data-cat="games"  id="cat-games">🎮 Games</button>
+      </div>
+    </section>
+
+    <!-- Step 2: Select Preferences -->
+    <section class="card" id="step-prefs">
+      <div class="card-header">
+        <div class="step-badge">02</div>
+        <div>
+          <h2 class="card-title">Select Your Interests</h2>
+          <p class="card-desc">Pick genres / tags that appeal to you. The more you select, the smarter the match.</p>
+        </div>
+      </div>
+      <div class="tag-cloud" id="tagCloud"></div>
+    </section>
+
+    <!-- Step 3: Rate Importance -->
+    <section class="card" id="step-rate">
+      <div class="card-header">
+        <div class="step-badge">03</div>
+        <div>
+          <h2 class="card-title">Rate Your Preference Strength</h2>
+          <p class="card-desc">Drag the sliders to weight how much each interest matters to you.</p>
+        </div>
+      </div>
+      <div class="sliders-container" id="slidersContainer">
+        <div class="empty-hint">← Select interests in Step 2 first</div>
+      </div>
+    </section>
+
+    <!-- Recommend Button -->
+    <div class="cta-row">
+      <button class="cta-btn" id="recommendBtn" onclick="generateRecommendations()">
+        <span class="cta-icon">⚡</span>
+        Generate AI Recommendations
+        <div class="cta-shimmer"></div>
+      </button>
+    </div>
+
+    <!-- Similarity Score Visualiser -->
+    <section class="card hidden" id="step-scores">
+      <div class="card-header">
+        <div class="step-badge algo">&#8721;</div>
+        <div>
+          <h2 class="card-title">Similarity Score Analysis</h2>
+          <p class="card-desc">Cosine similarity scores between your profile and each item's feature vector.</p>
+        </div>
+      </div>
+      <div class="score-bars" id="scoreBars"></div>
+    </section>
+
+    <!-- Results -->
+    <section class="card hidden" id="step-results">
+      <div class="card-header">
+        <div class="step-badge result">&#9733;</div>
+        <div>
+          <h2 class="card-title">Your Personalised Recommendations</h2>
+          <p class="card-desc">Ranked by AI match score — highest alignment first.</p>
+        </div>
+      </div>
+      <div class="results-grid" id="resultsGrid"></div>
+      <div class="reset-row">
+        <button class="reset-btn" onclick="resetApp()">🔄 Start Over</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Algorithm explanation panel -->
+  <section class="algo-panel">
+    <h3 class="algo-title">How the Engine Works</h3>
+    <div class="algo-steps">
+      <div class="algo-step">
+        <div class="algo-num">1</div>
+        <div>
+          <strong>User Vector</strong>
+          <p>Your selected tags and slider weights form a weighted feature vector <code>U = [w1, w2, ..., wn]</code></p>
+        </div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-num">2</div>
+        <div>
+          <strong>Item Vectors</strong>
+          <p>Each item has a feature vector <code>I = [0/1, ...]</code> encoding which genres/tags it belongs to.</p>
+        </div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-num">3</div>
+        <div>
+          <strong>Cosine Similarity</strong>
+          <p><code>sim(U, I) = (U · I) / (|U| × |I|)</code> — measures angular closeness in feature space.</p>
+        </div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-num">4</div>
+        <div>
+          <strong>Ranked Output</strong>
+          <p>Items are sorted descending by similarity score and the top matches are presented to you.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>Built for <strong>DecodeLabs AI Project 3</strong> · NeuraMatch Recommendation Engine</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
